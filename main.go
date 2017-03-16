@@ -70,7 +70,9 @@ func main() {
 	})
 	r.Use(c.Handler)
 
-	r.Get("/", handler{context, index})
+	r.Get("/api/subject", handler{context, listSubjects})
+
+	// r.Post("/api/subject", handler{context, createSubject})
 
 	fmt.Println("Server UP at port " + cfg.Server.Port)
 
