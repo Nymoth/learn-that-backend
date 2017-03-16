@@ -5,14 +5,22 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/rs/cors"
 	"github.com/zenazn/goji/graceful"
 	"github.com/zenazn/goji/web"
+
+	"fmt"
 
 	"gopkg.in/mgo.v2"
 )
 
 type config struct {
+	Server   serverConfig   `json:"server"`
 	Database databaseConfig `json:"database"`
+}
+
+type serverConfig struct {
+	Port string `json:"port"`
 }
 
 type databaseConfig struct {
@@ -21,7 +29,7 @@ type databaseConfig struct {
 
 type context struct {
 	cfg *config
-	db  *mgo.Session
+	db  *mgo.Database
 }
 
 type handler struct {
@@ -29,8 +37,10 @@ type handler struct {
 	C func(*context, http.ResponseWriter, *http.Request) (int, error)
 }
 
-func (h handler) handle(w http.ResponseWriter, r *http.Request) {
+func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	status, err := h.C(h.context, w, r)
+
+	fmt.Fprintln(w)
 
 	if err != nil {
 		switch status {
@@ -55,10 +65,16 @@ func main() {
 	}
 
 	r := web.New()
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"localhost"},
+	})
+	r.Use(c.Handler)
 
 	r.Get("/", handler{context, index})
 
-	graceful.ListenAndServe(":8080", r)
+	fmt.Println("Server UP at port " + cfg.Server.Port)
+
+	graceful.ListenAndServe(":"+cfg.Server.Port, r)
 }
 
 func getConfig() *config {
@@ -73,7 +89,7 @@ func getConfig() *config {
 	return cfg
 }
 
-func getDBSession(c *databaseConfig) *mgo.Session {
+func getDBSession(c *databaseConfig) *mgo.Database {
 
 	session, err := mgo.Dial("mongodb://" + c.Host)
 
@@ -81,5 +97,5 @@ func getDBSession(c *databaseConfig) *mgo.Session {
 		panic(err)
 	}
 
-	return session
+	return session.DB("test")
 }
