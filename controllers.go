@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 
 	"gopkg.in/mgo.v2"
@@ -31,6 +33,12 @@ func _display(w http.ResponseWriter, s string) int {
 	return http.StatusOK
 }
 
+func _parseBody(b io.ReadCloser, t interface{}) {
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(b)
+	json.Unmarshal(buf.Bytes(), t)
+}
+
 func _list(db *mgo.Database, t interface{}, c string) (string, error) {
 	if err := db.C(c).Find(bson.M{}).All(t); err != nil {
 		return string(http.StatusNotFound), err
@@ -39,39 +47,33 @@ func _list(db *mgo.Database, t interface{}, c string) (string, error) {
 	return string(mj), nil
 }
 
-// func _parseBody(b io.ReadCloser, t interface{}) {
-// 	buf := new(bytes.Buffer)
-// 	buf.ReadFrom(b)
-// 	json.Unmarshal(buf.Bytes(), t)
-// }
-
-// func _create(db *mgo.Database, t interface{}, c string) error {
-// 	return db.C(c).Insert(t)
-// }
+func _create(db *mgo.Database, t interface{}, c string) error {
+	return db.C(c).Insert(t)
+}
 
 // Subject
 
 func listSubjects(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
 	v, err := _list(c.db, &subjects{}, "subjects")
 	if err != nil {
-		return _display(w, v), nil
+		return http.StatusNotFound, err
 	}
-	return http.StatusNotFound, err
+	return _display(w, v), nil
 }
 
 // func getSubject(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
 
 // }
 
-// func createSubject(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
-// 	t := &subject{}
-// 	_parseBody(r.Body, &t)
-// 	err := _create(c.db, t, "subjects")
-// 	if err != nil {
-// 		return http.StatusOK, nil
-// 	}
-// 	return http.StatusInternalServerError, err
-// }
+func createSubject(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
+	t := &subject{ID: bson.NewObjectId()}
+	_parseBody(r.Body, &t)
+	err := _create(c.db, t, "subjects")
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+	return http.StatusOK, nil
+}
 
 // func editSubject(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
 

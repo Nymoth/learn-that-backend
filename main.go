@@ -25,6 +25,7 @@ type serverConfig struct {
 
 type databaseConfig struct {
 	Host string `json:"host"`
+	Name string `json:"name"`
 }
 
 type context struct {
@@ -40,9 +41,12 @@ type handler struct {
 func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	status, err := h.C(h.context, w, r)
 
-	fmt.Fprintln(w)
+	fmt.Println(r.Method, r.RequestURI, status)
 
 	if err != nil {
+
+		fmt.Println(err.Error())
+
 		switch status {
 		case http.StatusNotFound:
 			http.NotFound(w, r)
@@ -70,9 +74,8 @@ func main() {
 	})
 	r.Use(c.Handler)
 
-	r.Get("/api/subject", handler{context, listSubjects})
-
-	// r.Post("/api/subject", handler{context, createSubject})
+	r.Get("/api/subjects", handler{context, listSubjects})
+	r.Post("/api/subject", handler{context, createSubject})
 
 	fmt.Println("Server UP at port " + cfg.Server.Port)
 
@@ -99,5 +102,5 @@ func getDBSession(c *databaseConfig) *mgo.Database {
 		panic(err)
 	}
 
-	return session.DB("test")
+	return session.DB(c.Name)
 }
