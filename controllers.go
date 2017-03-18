@@ -27,38 +27,47 @@ func index(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
 	return http.StatusOK, nil
 }
 
-func _display(w http.ResponseWriter, s string) int {
+func _display(w http.ResponseWriter, o io.Reader) {
 	w.Header().Set("Content-Type", "application/json;charset=UTF-8")
-	fmt.Fprint(w, string(s))
-	return http.StatusOK
+	buf := &bytes.Buffer{}
+	buf.ReadFrom(o)
+	fmt.Fprint(w, buf.String())
 }
 
 func _parseBody(b io.ReadCloser, t interface{}) {
-	buf := new(bytes.Buffer)
+	buf := &bytes.Buffer{}
 	buf.ReadFrom(b)
 	json.Unmarshal(buf.Bytes(), t)
 }
 
-func _list(db *mgo.Database, t interface{}, c string) (string, error) {
+func _list(db *mgo.Database, t interface{}, c string) (io.Reader, int, error) {
 	if err := db.C(c).Find(bson.M{}).All(t); err != nil {
-		return string(http.StatusNotFound), err
+		return nil, http.StatusInternalServerError, err
 	}
-	mj, _ := json.Marshal(t)
-	return string(mj), nil
+	mj, err := json.Marshal(t)
+	if err != nil {
+		return nil, http.StatusInternalServerError, err
+	}
+	return bytes.NewReader(mj), http.StatusOK, nil
 }
 
-func _create(db *mgo.Database, t interface{}, c string) error {
-	return db.C(c).Insert(t)
+func _create(db *mgo.Database, t interface{}, c string) (io.Reader, int, error) {
+	if err := db.C(c).Insert(t); err != nil {
+		return nil, http.StatusInternalServerError, err
+	}
+	mj, _ := json.Marshal(t)
+	return bytes.NewReader(mj), http.StatusOK, nil
 }
 
 // Subject
 
 func listSubjects(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
-	v, err := _list(c.db, &subjects{}, "subjects")
+	o, s, err := _list(c.db, &subjects{}, "subjects")
 	if err != nil {
-		return http.StatusNotFound, err
+		return s, err
 	}
-	return _display(w, v), nil
+	_display(w, o)
+	return s, nil
 }
 
 // func getSubject(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
@@ -68,11 +77,12 @@ func listSubjects(c *context, w http.ResponseWriter, r *http.Request) (int, erro
 func createSubject(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
 	t := &subject{ID: bson.NewObjectId()}
 	_parseBody(r.Body, &t)
-	err := _create(c.db, t, "subjects")
+	o, s, err := _create(c.db, t, "subjects")
 	if err != nil {
-		return http.StatusInternalServerError, err
+		return s, err
 	}
-	return http.StatusOK, nil
+	_display(w, o)
+	return s, nil
 }
 
 // func editSubject(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
