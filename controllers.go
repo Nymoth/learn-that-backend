@@ -52,7 +52,7 @@ func _list(db *mgo.Database, t interface{}, c string) (io.Reader, int, error) {
 }
 
 func _create(db *mgo.Database, t interface{}, c string) (io.Reader, int, error) {
-	if err := db.C(c).Insert(); err != nil {
+	if err := db.C(c).Insert(t); err != nil {
 		return nil, http.StatusInternalServerError, err
 	}
 	mj, _ := json.Marshal(t)
