@@ -76,6 +76,7 @@ func main() {
 
 	r.Get("/api/subjects", handler{context, listSubjects})
 	r.Post("/api/subject", handler{context, createSubject})
+	r.Delete("/api/subject", handler{context, deleteSubject})
 
 	fmt.Println("Server UP at port " + cfg.Server.Port)
 
