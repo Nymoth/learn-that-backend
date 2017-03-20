@@ -69,10 +69,6 @@ func listSubjects(c *context, w http.ResponseWriter, r *http.Request) (int, erro
 	return s, nil
 }
 
-// func getSubject(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
-
-// }
-
 func createSubject(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
 	t := &subject{ID: bson.NewObjectId()}
 	_parseBody(r.Body, &t)
@@ -112,10 +108,6 @@ func listTopics(c *context, w http.ResponseWriter, r *http.Request) (int, error)
 	return s, nil
 }
 
-// func getTopic(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
-
-// }
-
 func editTopic(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
 	t := &topic{}
 	_parseBody(r.Body, &t)
@@ -144,46 +136,80 @@ func deleteTopic(c *context, w http.ResponseWriter, r *http.Request) (int, error
 	return _delete(c.db, t.ID, "topics")
 }
 
-// // Course
+// Course
 
-// func listCourses(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
+func listCourses(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
+	o, s, err := _list(c.db, &courses{}, "courses")
+	if err != nil {
+		return s, err
+	}
+	_display(w, o)
+	return s, nil
+}
 
-// }
+func editCourse(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
+	t := &course{}
+	_parseBody(r.Body, &t)
+	o, s, err := _edit(c.db, t.ID, t, "courses")
+	if err != nil {
+		return s, err
+	}
+	_display(w, o)
+	return s, nil
+}
 
-// func getCourse(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
+func createCourse(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
+	t := &course{ID: bson.NewObjectId()}
+	_parseBody(r.Body, &t)
+	o, s, err := _create(c.db, t, "courses")
+	if err != nil {
+		return s, err
+	}
+	_display(w, o)
+	return s, nil
+}
 
-// }
+func deleteCourse(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
+	t := &course{}
+	_parseBody(r.Body, &t)
+	return _delete(c.db, t.ID, "courses")
+}
 
-// func editCourse(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
+// User
 
-// }
+func listUsers(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
+	o, s, err := _list(c.db, &users{}, "users")
+	if err != nil {
+		return s, err
+	}
+	_display(w, o)
+	return s, nil
+}
 
-// func createCourse(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
+func editUser(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
+	t := &user{}
+	_parseBody(r.Body, &t)
+	o, s, err := _edit(c.db, t.ID, t, "users")
+	if err != nil {
+		return s, err
+	}
+	_display(w, o)
+	return s, nil
+}
 
-// }
+func createUser(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
+	t := &user{ID: bson.NewObjectId()}
+	_parseBody(r.Body, &t)
+	o, s, err := _create(c.db, t, "users")
+	if err != nil {
+		return s, err
+	}
+	_display(w, o)
+	return s, nil
+}
 
-// func deleteCourse(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
-
-// }
-
-// // User
-
-// func listUsers(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
-
-// }
-
-// func getUser(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
-
-// }
-
-// func editUser(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
-
-// }
-
-// func createUser(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
-
-// }
-
-// func deleteUser(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
-
-// }
+func deleteUser(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
+	t := &user{}
+	_parseBody(r.Body, &t)
+	return _delete(c.db, t.ID, "users")
+}
