@@ -79,6 +79,11 @@ func main() {
 	r.Delete("/api/subject", handler{context, deleteSubject})
 	r.Put("/api/subject", handler{context, editSubject})
 
+	r.Get("/api/topics", handler{context, listTopics})
+	r.Post("/api/topic", handler{context, createTopic})
+	r.Delete("/api/topic", handler{context, deleteTopic})
+	r.Put("/api/topic", handler{context, editTopic})
+
 	fmt.Println("Server UP at port " + cfg.Server.Port)
 
 	graceful.ListenAndServe(":"+cfg.Server.Port, r)

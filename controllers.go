@@ -11,22 +11,6 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-func index(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
-
-	courses := courses{}
-
-	if err := c.db.C("courses").Find(bson.M{}).All(&courses); err != nil {
-		return http.StatusNotFound, err
-	}
-
-	mj, _ := json.Marshal(courses)
-
-	w.Header().Set("Content-Type", "application/json;charset=UTF-8")
-	fmt.Fprint(w, string(mj))
-
-	return http.StatusOK, nil
-}
-
 func _display(w http.ResponseWriter, o io.Reader) {
 	w.Header().Set("Content-Type", "application/json;charset=UTF-8")
 	buf := &bytes.Buffer{}
@@ -117,27 +101,48 @@ func deleteSubject(c *context, w http.ResponseWriter, r *http.Request) (int, err
 	return _delete(c.db, t.ID, "subjects")
 }
 
-// // Topic
+// Topic
 
-// func listTopics(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
-
-// }
+func listTopics(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
+	o, s, err := _list(c.db, &topics{}, "topics")
+	if err != nil {
+		return s, err
+	}
+	_display(w, o)
+	return s, nil
+}
 
 // func getTopic(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
 
 // }
 
-// func editTopic(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
+func editTopic(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
+	t := &topic{}
+	_parseBody(r.Body, &t)
+	o, s, err := _edit(c.db, t.ID, t, "topics")
+	if err != nil {
+		return s, err
+	}
+	_display(w, o)
+	return s, nil
+}
 
-// }
+func createTopic(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
+	t := &topic{ID: bson.NewObjectId()}
+	_parseBody(r.Body, &t)
+	o, s, err := _create(c.db, t, "topics")
+	if err != nil {
+		return s, err
+	}
+	_display(w, o)
+	return s, nil
+}
 
-// func createTopic(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
-
-// }
-
-// func deleteTopic(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
-
-// }
+func deleteTopic(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
+	t := &topic{}
+	_parseBody(r.Body, &t)
+	return _delete(c.db, t.ID, "topics")
+}
 
 // // Course
 
