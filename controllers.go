@@ -66,6 +66,14 @@ func _delete(db *mgo.Database, id bson.ObjectId, c string) (int, error) {
 	return http.StatusOK, nil
 }
 
+func _edit(db *mgo.Database, id bson.ObjectId, t interface{}, c string) (io.Reader, int, error) {
+	if err := db.C(c).UpdateId(id, t); err != nil {
+		return nil, http.StatusInternalServerError, err
+	}
+	mj, _ := json.Marshal(t)
+	return bytes.NewReader(mj), http.StatusOK, nil
+}
+
 // Subject
 
 func listSubjects(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
@@ -92,9 +100,16 @@ func createSubject(c *context, w http.ResponseWriter, r *http.Request) (int, err
 	return s, nil
 }
 
-// func editSubject(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
-
-// }
+func editSubject(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
+	t := &subject{}
+	_parseBody(r.Body, &t)
+	o, s, err := _edit(c.db, t.ID, t, "subjects")
+	if err != nil {
+		return s, err
+	}
+	_display(w, o)
+	return s, nil
+}
 
 func deleteSubject(c *context, w http.ResponseWriter, r *http.Request) (int, error) {
 	t := &subject{}
