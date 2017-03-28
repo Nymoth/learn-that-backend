@@ -2,14 +2,13 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 
 	"github.com/rs/cors"
 	"github.com/zenazn/goji/graceful"
 	"github.com/zenazn/goji/web"
-
-	"fmt"
 
 	"gopkg.in/mgo.v2"
 )

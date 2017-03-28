@@ -1,0 +1,73 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "OpqXzG/TsirRRiSxa+hCSOfaQ0k=",
+			"path": "github.com/rs/cors",
+			"revision": "a62a804a8a009876ca59105f7899938a1349f4b3",
+			"revisionTime": "2016-06-17T23:19:35Z"
+		},
+		{
+			"checksumSHA1": "c4NinZs0gcDUkXx375li6epE8K0=",
+			"path": "github.com/rs/xhandler",
+			"revision": "ed27b6fd65218132ee50cd95f38474a3d8a2cd12",
+			"revisionTime": "2016-06-18T19:32:21Z"
+		},
+		{
+			"checksumSHA1": "l2tN24ZTNNSs//IMWr/O4RhWKG8=",
+			"path": "github.com/zenazn/goji/graceful",
+			"revision": "4d7077956293261309684d3cf1af673f773c6819",
+			"revisionTime": "2016-08-23T03:05:49Z"
+		},
+		{
+			"checksumSHA1": "QAfvKT3QOkgU729iWZhu/pOXsVA=",
+			"path": "github.com/zenazn/goji/graceful/listener",
+			"revision": "4d7077956293261309684d3cf1af673f773c6819",
+			"revisionTime": "2016-08-23T03:05:49Z"
+		},
+		{
+			"checksumSHA1": "l5aMhmI1srMTpOZYzBj3H8T5Z70=",
+			"path": "github.com/zenazn/goji/web",
+			"revision": "4d7077956293261309684d3cf1af673f773c6819",
+			"revisionTime": "2016-08-23T03:05:49Z"
+		},
+		{
+			"checksumSHA1": "Y+HGqEkYM15ir+J93MEaHdyFy0c=",
+			"path": "golang.org/x/net/context",
+			"revision": "a6577fac2d73be281a500b310739095313165611",
+			"revisionTime": "2017-03-08T20:54:49Z"
+		},
+		{
+			"checksumSHA1": "YFQU7VULoTU4TwPz3V97b2exyxE=",
+			"path": "gopkg.in/mgo.v2",
+			"revision": "3f83fa5005286a7fe593b055f0d7771a7dce4655",
+			"revisionTime": "2016-08-18T02:01:20Z"
+		},
+		{
+			"checksumSHA1": "Kpt9VvtG+deoQ+p34F2CeTofTik=",
+			"path": "gopkg.in/mgo.v2/bson",
+			"revision": "3f83fa5005286a7fe593b055f0d7771a7dce4655",
+			"revisionTime": "2016-08-18T02:01:20Z"
+		},
+		{
+			"checksumSHA1": "9tMleZvl/yjpkj7oO3pOfZc+MJw=",
+			"path": "gopkg.in/mgo.v2/internal/json",
+			"revision": "3f83fa5005286a7fe593b055f0d7771a7dce4655",
+			"revisionTime": "2016-08-18T02:01:20Z"
+		},
+		{
+			"checksumSHA1": "WnXjUmdgl3mTwwqYBxbO974iCe8=",
+			"path": "gopkg.in/mgo.v2/internal/sasl",
+			"revision": "3f83fa5005286a7fe593b055f0d7771a7dce4655",
+			"revisionTime": "2016-08-18T02:01:20Z"
+		},
+		{
+			"checksumSHA1": "CrciG7woshiINwZxPsxisgDGL3Y=",
+			"path": "gopkg.in/mgo.v2/internal/scram",
+			"revision": "3f83fa5005286a7fe593b055f0d7771a7dce4655",
+			"revisionTime": "2016-08-18T02:01:20Z"
+		}
+	],
+	"rootPath": "github.com/Nymoth/learn-that-backend"
+}
